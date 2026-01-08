@@ -1,22 +1,29 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, ArrowRight, User, Briefcase } from 'lucide-react';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Sparkles,
+  Mail,
+  Lock,
+  ArrowRight,
+  User,
+  Briefcase,
+} from "lucide-react";
 
 const UserLogin = () => {
   const navigate = useNavigate();
   const [isFlipped, setIsFlipped] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [loginData, setLoginData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const [registerData, setRegisterData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const handleLoginChange = (e) => {
@@ -30,26 +37,29 @@ const UserLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    localStorage.setItem('userAuth', 'true');
-    localStorage.setItem('userData', JSON.stringify({ email: loginData.email }));
-    
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    localStorage.setItem("userAuth", "true");
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({ email: loginData.email })
+    );
+
     setIsLoading(false);
-    navigate('/user/dashboard');
+    navigate("/user/dashboard");
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
+
     if (registerData.password !== registerData.confirmPassword) {
-      alert('Passwords do not match');
+      alert("Passwords do not match");
       return;
     }
 
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
     setIsFlipped(false);
   };
@@ -66,10 +76,16 @@ const UserLogin = () => {
             Find Your Dream Job
           </h2>
           <p className="text-lg text-foreground/80 mb-8">
-            Let AI match your skills with the perfect opportunities. Stand out with our smart ATS-optimized profile.
+            Let AI match your skills with the perfect opportunities. Stand out
+            with our smart ATS-optimized profile.
           </p>
           <div className="space-y-4">
-            {['AI-powered job matching', 'ATS score optimization', 'Track your applications', 'Get interview ready'].map((feature) => (
+            {[
+              "AI-powered job matching",
+              "ATS score optimization",
+              "Track your applications",
+              "Get interview ready",
+            ].map((feature) => (
               <div key={feature} className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-foreground/10 flex items-center justify-center">
                   <ArrowRight className="w-3 h-3" />
@@ -82,23 +98,22 @@ const UserLogin = () => {
       </div>
 
       {/* Right Side - Flip Card */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+      <div className="w-full lg:w-1/2 flex items-start justify-center p-8 bg-background pt-20">
         <div className="w-full max-w-md perspective-1000">
-          <div 
+          <div
             className={`relative w-full transition-transform duration-700 transform-style-preserve-3d ${
-              isFlipped ? 'rotate-y-180' : ''
+              isFlipped ? "rotate-y-180" : ""
             }`}
             style={{
-              transformStyle: 'preserve-3d',
-              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              transformStyle: "preserve-3d",
+              transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
             }}
           >
             {/* Login Form - Front */}
-            <div 
-              className="w-full animate-slide-up"
+            <div
+              className="absolute w-full h-full"
               style={{
-                backfaceVisibility: 'hidden',
-                display: isFlipped ? 'none' : 'block',
+                backfaceVisibility: "hidden",
               }}
             >
               {/* Logo */}
@@ -163,7 +178,9 @@ const UserLogin = () => {
                       type="checkbox"
                       className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
                     />
-                    <span className="text-sm text-muted-foreground">Remember me</span>
+                    <span className="text-sm text-muted-foreground">
+                      Remember me
+                    </span>
                   </label>
                   <Link to="#" className="text-sm text-primary hover:underline">
                     Forgot password?
@@ -187,8 +204,8 @@ const UserLogin = () => {
               </form>
 
               <p className="mt-8 text-center text-muted-foreground">
-                Don't have an account?{' '}
-                <button 
+                Don't have an account?{" "}
+                <button
                   onClick={() => setIsFlipped(true)}
                   className="text-primary font-medium hover:underline"
                 >
@@ -198,11 +215,11 @@ const UserLogin = () => {
             </div>
 
             {/* Register Form - Back */}
-            <div 
-              className="w-full animate-slide-up"
+            <div
+              className="absolute w-full h-full"
               style={{
-                backfaceVisibility: 'hidden',
-                display: isFlipped ? 'block' : 'none',
+                backfaceVisibility: "hidden",
+                transform: "rotateY(180deg)",
               }}
             >
               {/* Logo */}
@@ -315,8 +332,8 @@ const UserLogin = () => {
               </form>
 
               <p className="mt-6 text-center text-muted-foreground">
-                Already have an account?{' '}
-                <button 
+                Already have an account?{" "}
+                <button
                   onClick={() => setIsFlipped(false)}
                   className="text-primary font-medium hover:underline"
                 >

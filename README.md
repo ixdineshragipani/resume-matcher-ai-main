@@ -1,4 +1,4 @@
-# Welcome to your project
+# Welcome to our project
 
 ## Project info
 
@@ -41,4 +41,3 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
-
