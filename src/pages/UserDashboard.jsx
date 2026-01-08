@@ -310,19 +310,7 @@ const UserDashboard = () => {
                   </div>
                 </div>
 
-                {/* Match Score */}
                 <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <div
-                      className={`ats-score ${getAtsScoreClass(
-                        application.atsScore
-                      )}`}
-                    >
-                      {application.atsScore}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">Match</p>
-                  </div>
-
                   {/* Status */}
                   <div className="flex items-center gap-3">
                     {getStatusIcon(application.status)}

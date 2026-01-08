@@ -1,19 +1,25 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Briefcase, Users, Info, Mail, Sparkles } from 'lucide-react';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Briefcase, Users, Info, Mail, Sparkles } from "lucide-react";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   const navLinks = [
-    { to: '/company/login', label: 'Company', icon: Briefcase },
-    { to: '/user/login', label: 'Users', icon: Users },
-    { to: '/about', label: 'About', icon: Info },
-    { to: '/contact', label: 'Contact', icon: Mail },
+    { to: "/", label: "Home", icon: Briefcase },
+    { to: "/company/login", label: "Company", icon: Briefcase },
+    { to: "/user/login", label: "Users", icon: Users },
+    { to: "/about", label: "About", icon: Info },
+    { to: "/contact", label: "Contact", icon: Mail },
   ];
 
-  const isActive = (path) => location.pathname.startsWith(path.split('/')[1] ? `/${path.split('/')[1]}` : path);
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
@@ -35,7 +41,9 @@ const Header = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`nav-link flex items-center gap-2 ${isActive(link.to) ? 'nav-link-active' : ''}`}
+                className={`nav-link flex items-center gap-2 ${
+                  isActive(link.to) ? "nav-link-active" : ""
+                }`}
               >
                 <link.icon className="w-4 h-4" />
                 {link.label}
@@ -74,8 +82,8 @@ const Header = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive(link.to)
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <link.icon className="w-5 h-5" />
