@@ -85,13 +85,11 @@ const UserLogin = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md perspective-1000">
           <div 
-            className={`relative w-full transition-transform duration-700 transform-style-preserve-3d ${
-              isFlipped ? 'rotate-y-180' : ''
-            }`}
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-            }}
+            // className={`relative w-full transition-transform duration-700 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}
+            // style={{
+            //   transformStyle: 'preserve-3d',
+            //   transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            // }}
           >
             {/* Login Form - Front */}
             <div 

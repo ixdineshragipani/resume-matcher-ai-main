@@ -1,61 +1,73 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { 
-  Sparkles, LogOut, Briefcase, Building2, MapPin,
-  Clock, ChevronRight, Search, Filter, TrendingUp,
-  CheckCircle2, XCircle, AlertCircle, FileText
-} from 'lucide-react';
+import { useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Sparkles,
+  LogOut,
+  Briefcase,
+  Building2,
+  MapPin,
+  Clock,
+  ChevronRight,
+  Search,
+  Filter,
+  TrendingUp,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  FileText,
+} from "lucide-react";
+
 
 // Dummy applications data
 const dummyApplications = [
   {
     id: 1,
-    jobTitle: 'Senior Frontend Developer',
-    companyName: 'TechCorp Inc.',
-    location: 'San Francisco, CA',
-    salary: '$120k - $160k',
-    appliedDate: '2024-01-15',
-    status: 'applied',
+    jobTitle: "Senior Frontend Developer",
+    companyName: "TechCorp Inc.",
+    location: "San Francisco, CA",
+    salary: "$120k - $160k",
+    appliedDate: "2024-01-15",
+    status: "applied",
     atsScore: 88,
   },
   {
     id: 2,
-    jobTitle: 'Full Stack Engineer',
-    companyName: 'StartupXYZ',
-    location: 'Remote',
-    salary: '$100k - $140k',
-    appliedDate: '2024-01-12',
-    status: 'shortlisted',
+    jobTitle: "Full Stack Engineer",
+    companyName: "StartupXYZ",
+    location: "Remote",
+    salary: "$100k - $140k",
+    appliedDate: "2024-01-12",
+    status: "shortlisted",
     atsScore: 92,
   },
   {
     id: 3,
-    jobTitle: 'React Developer',
-    companyName: 'Digital Agency Co.',
-    location: 'New York, NY',
-    salary: '$90k - $120k',
-    appliedDate: '2024-01-10',
-    status: 'rejected',
+    jobTitle: "React Developer",
+    companyName: "Digital Agency Co.",
+    location: "New York, NY",
+    salary: "$90k - $120k",
+    appliedDate: "2024-01-10",
+    status: "rejected",
     atsScore: 65,
   },
   {
     id: 4,
-    jobTitle: 'JavaScript Engineer',
-    companyName: 'Enterprise Solutions',
-    location: 'Austin, TX',
-    salary: '$110k - $150k',
-    appliedDate: '2024-01-08',
-    status: 'applied',
+    jobTitle: "JavaScript Engineer",
+    companyName: "Enterprise Solutions",
+    location: "Austin, TX",
+    salary: "$110k - $150k",
+    appliedDate: "2024-01-08",
+    status: "applied",
     atsScore: 78,
   },
   {
     id: 5,
-    jobTitle: 'UI Developer',
-    companyName: 'Creative Studio',
-    location: 'Los Angeles, CA',
-    salary: '$85k - $110k',
-    appliedDate: '2024-01-05',
-    status: 'shortlisted',
+    jobTitle: "UI Developer",
+    companyName: "Creative Studio",
+    location: "Los Angeles, CA",
+    salary: "$85k - $110k",
+    appliedDate: "2024-01-05",
+    status: "shortlisted",
     atsScore: 85,
   },
 ];
@@ -63,22 +75,32 @@ const dummyApplications = [
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [applications, setApplications] = useState(dummyApplications);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem('userAuth');
-    localStorage.removeItem('userData');
-    navigate('/');
+    localStorage.removeItem("userAuth");
+    localStorage.removeItem("userData");
+    navigate("/");
+  };
+  
+  const handleProfile = () => {
+    navigate("/Profile");
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'applied':
+      case "applied":
         return <AlertCircle className="w-5 h-5 text-primary" />;
-      case 'shortlisted':
+      case "shortlisted":
         return <CheckCircle2 className="w-5 h-5 text-success" />;
-      case 'rejected':
+      case "rejected":
         return <XCircle className="w-5 h-5 text-destructive" />;
       default:
         return <AlertCircle className="w-5 h-5 text-muted-foreground" />;
@@ -87,51 +109,55 @@ const UserDashboard = () => {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      applied: { class: 'status-applied', label: 'Applied' },
-      shortlisted: { class: 'status-shortlisted', label: 'Shortlisted' },
-      rejected: { class: 'status-rejected', label: 'Rejected' },
+      applied: { class: "status-applied", label: "Applied" },
+      shortlisted: { class: "status-shortlisted", label: "Shortlisted" },
+      rejected: { class: "status-rejected", label: "Rejected" },
     };
     return statusConfig[status] || statusConfig.applied;
   };
 
   const getAtsScoreClass = (score) => {
-    if (score >= 80) return 'ats-high';
-    if (score >= 60) return 'ats-medium';
-    return 'ats-low';
+    if (score >= 80) return "ats-high";
+    if (score >= 60) return "ats-medium";
+    return "ats-low";
   };
 
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = 
+  const filteredApplications = applications.filter((app) => {
+    const matchesSearch =
       app.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.companyName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || app.status === filterStatus;
+    const matchesFilter = filterStatus === "all" || app.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
 
   const stats = [
-    { 
-      label: 'Total Applications', 
-      value: applications.length, 
-      icon: Briefcase, 
-      color: 'bg-primary/10 text-primary' 
+    {
+      label: "Total Applications",
+      value: applications.length,
+      icon: Briefcase,
+      color: "bg-primary/10 text-primary",
     },
-    { 
-      label: 'Shortlisted', 
-      value: applications.filter(a => a.status === 'shortlisted').length, 
-      icon: CheckCircle2, 
-      color: 'bg-success/10 text-success' 
+    {
+      label: "Shortlisted",
+      value: applications.filter((a) => a.status === "shortlisted").length,
+      icon: CheckCircle2,
+      color: "bg-success/10 text-success",
     },
-    { 
-      label: 'Under Review', 
-      value: applications.filter(a => a.status === 'applied').length, 
-      icon: Clock, 
-      color: 'bg-warning/10 text-warning' 
+    {
+      label: "Under Review",
+      value: applications.filter((a) => a.status === "applied").length,
+      icon: Clock,
+      color: "bg-warning/10 text-warning",
     },
-    { 
-      label: 'Avg Match Score', 
-      value: Math.round(applications.reduce((sum, a) => sum + a.atsScore, 0) / applications.length) + '%', 
-      icon: TrendingUp, 
-      color: 'bg-accent/10 text-accent' 
+    {
+      label: "Avg Match Score",
+      value:
+        Math.round(
+          applications.reduce((sum, a) => sum + a.atsScore, 0) /
+            applications.length
+        ) + "%",
+      icon: TrendingUp,
+      color: "bg-accent/10 text-accent",
     },
   ];
 
@@ -160,7 +186,11 @@ const UserDashboard = () => {
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden md:inline">Logout</span>
+                
               </button>
+              <button
+              onClick={handleProfile}
+                >Profile </button>
             </div>
           </div>
         </div>
@@ -170,7 +200,7 @@ const UserDashboard = () => {
         {/* Welcome Section */}
         <div className="mb-8 animate-slide-up">
           <h1 className="text-3xl font-display font-bold text-foreground mb-2">
-            Your Applications 📋
+            Your Applications
           </h1>
           <p className="text-muted-foreground">
             Track and manage all your job applications in one place
@@ -182,9 +212,13 @@ const UserDashboard = () => {
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className={`card-interactive p-6 animate-slide-up delay-${(index + 1) * 100}`}
+              className={`card-interactive p-6 animate-slide-up delay-${
+                (index + 1) * 100
+              }`}
             >
-              <div className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center mb-4`}>
+              <div
+                className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center mb-4`}
+              >
                 <stat.icon className="w-6 h-6" />
               </div>
               <div className="text-2xl font-display font-bold text-foreground">
@@ -206,10 +240,20 @@ const UserDashboard = () => {
                 Optimize Your Profile
               </h3>
               <p className="text-sm text-muted-foreground">
-                Upload your resume to get AI-powered suggestions and improve your ATS score for better job matches.
+                Upload your resume to get AI-powered suggestions and improve
+                your ATS score for better job matches.
               </p>
             </div>
-            <button className="btn-primary ml-auto hidden md:flex">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <button
+              className="btn-primary ml-auto flex md:flex"
+              onClick={() => fileInputRef.current.click()}
+            >
               Upload Resume
             </button>
           </div>
@@ -246,7 +290,10 @@ const UserDashboard = () => {
           {filteredApplications.map((application, index) => (
             <div
               key={application.id}
-              className={`card-interactive p-6 animate-slide-up delay-${Math.min((index + 5) * 100, 500)}`}
+              className={`card-interactive p-6 animate-slide-up delay-${Math.min(
+                (index + 5) * 100,
+                500
+              )}`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                 {/* Company Logo & Info */}
@@ -272,24 +319,21 @@ const UserDashboard = () => {
                   </div>
                 </div>
 
-                {/* Match Score */}
                 <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <div className={`ats-score ${getAtsScoreClass(application.atsScore)}`}>
-                      {application.atsScore}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">Match</p>
-                  </div>
-
                   {/* Status */}
                   <div className="flex items-center gap-3">
                     {getStatusIcon(application.status)}
                     <div>
-                      <span className={`status-badge ${getStatusBadge(application.status).class}`}>
+                      <span
+                        className={`status-badge ${
+                          getStatusBadge(application.status).class
+                        }`}
+                      >
                         {getStatusBadge(application.status).label}
                       </span>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Applied {new Date(application.appliedDate).toLocaleDateString()}
+                        Applied{" "}
+                        {new Date(application.appliedDate).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -307,7 +351,9 @@ const UserDashboard = () => {
         {filteredApplications.length === 0 && (
           <div className="text-center py-12">
             <Briefcase className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">No applications found matching your criteria</p>
+            <p className="text-muted-foreground">
+              No applications found matching your criteria
+            </p>
           </div>
         )}
       </main>
