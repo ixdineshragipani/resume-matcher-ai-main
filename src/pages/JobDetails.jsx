@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Sparkles,
@@ -10,9 +10,8 @@ import {
   Clock,
   CheckCircle2,
   Award,
-  Upload,
+  AlertCircle,
   FileText,
-  X,
 } from "lucide-react";
 
 // This will eventually come from your backend/database
@@ -90,81 +89,36 @@ const dummyJobDetails = {
 const JobDetails = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
   
   const [jobDetails, setJobDetails] = useState(null);
   const [isApplying, setIsApplying] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
+  const [userResume, setUserResume] = useState(null);
 
   useEffect(() => {
     // In a real app, fetch job details from your backend
     const job = dummyJobDetails[jobId];
     if (job) {
       setJobDetails(job);
-      // Check if user has already applied (check from backend/localStorage)
+      
+      // Check user's resume and application status
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
       const appliedJobs = userData.appliedJobs || [];
       setHasApplied(appliedJobs.some(app => app.jobId === parseInt(jobId)));
+      
+      // Get user's resume from profile
+      if (userData.resume) {
+        setUserResume(userData.resume);
+      }
     }
   }, [jobId]);
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type (PDF, DOC, DOCX)
-      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Please upload a PDF or DOC file');
-        return;
-      }
-      
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File size should not exceed 5MB');
-        return;
-      }
-
-      setSelectedFile(file);
-      simulateUpload(file);
-    }
-  };
-
-  const simulateUpload = (file) => {
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 200);
-  };
-
-  const removeFile = () => {
-    setSelectedFile(null);
-    setUploadProgress(0);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
   const handleApply = async () => {
-    if (!selectedFile) {
-      alert('Please upload your resume before applying');
-      return;
-    }
-
-    if (isUploading) {
-      alert('Please wait for the resume upload to complete');
+    if (!userResume) {
+      // Redirect to profile to upload resume
+      if (window.confirm('Please upload your resume in your profile first. Would you like to go to your profile now?')) {
+        navigate('/Profile');
+      }
       return;
     }
 
@@ -181,7 +135,7 @@ const JobDetails = () => {
         jobTitle: jobDetails.jobTitle,
         companyName: jobDetails.companyName,
         appliedDate: new Date().toISOString().split('T')[0],
-        resumeFileName: selectedFile.name,
+        resumeFileName: userResume.fileName,
         status: 'applied',
         atsScore: Math.floor(Math.random() * 30) + 70, // Random score 70-100
       });
@@ -284,82 +238,38 @@ const JobDetails = () => {
             </div>
           </div>
 
-          {/* Resume Upload Section */}
+          {/* Resume Status */}
           {!hasApplied && (
-            <div className="mb-6 p-6 bg-primary/5 border border-primary/20 rounded-xl">
-              <div className="flex items-start gap-3 mb-4">
-                <Upload className="w-5 h-5 text-primary mt-1" />
-                <div className="flex-1">
-                  <h3 className="font-semibold text-foreground mb-1">
-                    Upload Your Resume
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Please upload your resume to apply for this position. Accepted formats: PDF, DOC, DOCX (Max 5MB)
-                  </p>
-                </div>
-              </div>
-
-              {!selectedFile ? (
-                <div>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileSelect}
-                    accept=".pdf,.doc,.docx"
-                    className="hidden"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="btn-secondary w-full flex items-center justify-center gap-2"
-                  >
-                    <FileText className="w-5 h-5" />
-                    Choose Resume File
-                  </button>
+            <div className="mb-6">
+              {userResume ? (
+                <div className="p-4 bg-success/5 border border-success/20 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-success" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">Resume Ready</p>
+                      <p className="text-xs text-muted-foreground">
+                        Your resume ({userResume.fileName}) will be submitted with this application
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div>
-                  <div className="flex items-center justify-between p-4 bg-background rounded-lg mb-3">
-                    <div className="flex items-center gap-3">
-                      <FileText className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {selectedFile.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {(selectedFile.size / 1024).toFixed(2)} KB
-                        </p>
-                      </div>
+                <div className="p-4 bg-warning/5 border border-warning/20 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-warning" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">Resume Required</p>
+                      <p className="text-xs text-muted-foreground">
+                        Please upload your resume in your profile before applying
+                      </p>
                     </div>
                     <button
-                      onClick={removeFile}
-                      className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
+                      onClick={() => navigate('/Profile')}
+                      className="btn-secondary text-sm"
                     >
-                      <X className="w-4 h-4" />
+                      Go to Profile
                     </button>
                   </div>
-
-                  {/* Progress Bar */}
-                  {isUploading && (
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-muted-foreground">Uploading...</span>
-                        <span className="font-medium text-primary">{uploadProgress}%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-300 ease-out"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {uploadProgress === 100 && !isUploading && (
-                    <div className="flex items-center gap-2 text-success text-sm">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>Resume uploaded successfully!</span>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -368,22 +278,23 @@ const JobDetails = () => {
           {/* Apply Button */}
           <button
             onClick={handleApply}
-            disabled={hasApplied || isApplying || isUploading || !selectedFile}
+            disabled={hasApplied || isApplying || !userResume}
             className={`btn-primary w-full ${
-              (hasApplied || !selectedFile || isUploading) ? "opacity-50 cursor-not-allowed" : ""
+              (hasApplied || !userResume) ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             {isApplying ? (
               "Submitting Application..."
             ) : hasApplied ? (
               <>
-                <CheckCircle2 className="w-5 h-5" />
+                <CheckCircle2 className="w-5 h-5 inline mr-2" />
                 Already Applied
               </>
-            ) : !selectedFile ? (
-              "Upload Resume to Apply"
-            ) : isUploading ? (
-              "Uploading Resume..."
+            ) : !userResume ? (
+              <>
+                <FileText className="w-5 h-5 inline mr-2" />
+                Upload Resume in Profile to Apply
+              </>
             ) : (
               "Submit Application"
             )}
@@ -478,12 +389,12 @@ const JobDetails = () => {
         <div className="fixed bottom-0 left-0 right-0 p-4 glass-card border-t border-border/50 md:hidden z-40">
           <button
             onClick={handleApply}
-            disabled={isApplying || isUploading || !selectedFile}
+            disabled={isApplying || !userResume}
             className={`btn-primary w-full ${
-              (!selectedFile || isUploading) ? "opacity-50 cursor-not-allowed" : ""
+              !userResume ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {isApplying ? "Submitting..." : !selectedFile ? "Upload Resume First" : "Submit Application"}
+            {isApplying ? "Submitting..." : !userResume ? "Upload Resume in Profile" : "Submit Application"}
           </button>
         </div>
       )}

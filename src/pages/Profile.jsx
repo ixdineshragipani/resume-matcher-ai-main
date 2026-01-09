@@ -139,7 +139,7 @@ const Profile = () => {
             </Link>
             <button
               onClick={() => navigate('/user/dashboard')}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Dashboard

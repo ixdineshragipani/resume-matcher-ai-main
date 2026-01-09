@@ -174,12 +174,12 @@ const UserDashboard = () => {
             </Link>
 
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground hidden md:block">
+              <span className="text-sm text-muted-foreground font-bold hidden md:block">
                 Job Seeker Dashboard
               </span>
-              <button className="flex items-center font-bold glass-card md:inline"
+              <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors"
               onClick={handleProfile}
-                >Profile </button>  
+                >Profile </button>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-destructive bg-destructive/10 rounded-lg hover:bg-destructive/20 transition-colors"
