@@ -14,6 +14,9 @@ import Contact from '../pages/Contact';
 import NotFound from '../pages/NotFound';
 import Profile from '../pages/Profile';
 import JobDetails from '../pages/JobDetails';
+import JobApplicants from '../pages/JobApplicants';
+
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -23,6 +26,9 @@ const AppRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/Profile" element={<Profile />} />
       <Route path="/job/:jobId" element={<JobDetails/>}/>
+{/* 
+      <Route path="/companydashboard" element={<CompanyDashboard />} />
+      <Route path="/company-dashboard/job/:jobId" element={<JobApplicants />} /> */}
       
       {/* Company Auth Routes */}
       <Route path="/company/login" element={<CompanyLogin />} />
@@ -38,6 +44,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute userType="company">
             <CompanyDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/company/dashboard/job/:jobId"
+        element={
+          <ProtectedRoute userType="company">
+            <JobApplicants />
           </ProtectedRoute>
         }
       />

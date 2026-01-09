@@ -126,9 +126,9 @@ const JobDetails = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground">Job not found</p>
-          <button onClick={() => navigate("/dashboard")} className="btn-primary mt-4">
+          {/* <button onClick={() => navigate("/user/dashboard")} className="btn-primary mt-4">
             Back to Dashboard
-          </button>
+          </button> */}
         </div>
       </div>
     );
@@ -147,10 +147,10 @@ const JobDetails = () => {
                 AI<span className="text-gradient">Match</span>
               </span>
             </Link>
-            <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            {/* <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="w-4 h-4" />
               Back to Dashboard
-            </button>
+            </button> */}
           </div>
         </div>
       </header>
