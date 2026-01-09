@@ -77,12 +77,8 @@ const UserDashboard = () => {
   const [applications, setApplications] = useState(dummyApplications);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef(null);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+
 
   const handleLogout = () => {
     localStorage.removeItem("userAuth");
@@ -229,7 +225,7 @@ const UserDashboard = () => {
           ))}
         </div>
 
-        {/* Profile Tip */}
+        {/* Profile Tip
         <div className="glass-card rounded-xl p-6 mb-6 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 animate-slide-up delay-300">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
@@ -257,7 +253,7 @@ const UserDashboard = () => {
               Upload Resume
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Filters & Search */}
         <div className="glass-card rounded-xl p-4 mb-6 animate-slide-up delay-400">

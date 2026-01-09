@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Sparkles,
@@ -10,6 +10,9 @@ import {
   Clock,
   CheckCircle2,
   Award,
+  Upload,
+  FileText,
+  X,
 } from "lucide-react";
 
 // This will eventually come from your backend/database
@@ -87,38 +90,116 @@ const dummyJobDetails = {
 const JobDetails = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  
   const [jobDetails, setJobDetails] = useState(null);
   const [isApplying, setIsApplying] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     // In a real app, fetch job details from your backend
     const job = dummyJobDetails[jobId];
     if (job) {
       setJobDetails(job);
-      // Check if user has already applied
+      // Check if user has already applied (check from backend/localStorage)
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
       const appliedJobs = userData.appliedJobs || [];
-      setHasApplied(appliedJobs.includes(parseInt(jobId)));
+      setHasApplied(appliedJobs.some(app => app.jobId === parseInt(jobId)));
     }
   }, [jobId]);
 
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type (PDF, DOC, DOCX)
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please upload a PDF or DOC file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size should not exceed 5MB');
+        return;
+      }
+
+      setSelectedFile(file);
+      simulateUpload(file);
+    }
+  };
+
+  const simulateUpload = (file) => {
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsUploading(false);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 200);
+  };
+
+  const removeFile = () => {
+    setSelectedFile(null);
+    setUploadProgress(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleApply = async () => {
+    if (!selectedFile) {
+      alert('Please upload your resume before applying');
+      return;
+    }
+
+    if (isUploading) {
+      alert('Please wait for the resume upload to complete');
+      return;
+    }
+
     setIsApplying(true);
     
+    // Simulate API call
     setTimeout(() => {
-      // Save application
+      // Save application to localStorage (in real app, send to backend)
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
       const appliedJobs = userData.appliedJobs || [];
-      appliedJobs.push(parseInt(jobId));
+      
+      appliedJobs.push({
+        jobId: parseInt(jobId),
+        jobTitle: jobDetails.jobTitle,
+        companyName: jobDetails.companyName,
+        appliedDate: new Date().toISOString().split('T')[0],
+        resumeFileName: selectedFile.name,
+        status: 'applied',
+        atsScore: Math.floor(Math.random() * 30) + 70, // Random score 70-100
+      });
+      
       userData.appliedJobs = appliedJobs;
       localStorage.setItem("userData", JSON.stringify(userData));
       
       setHasApplied(true);
       setIsApplying(false);
       
-      alert("Application submitted successfully!");
-    }, 1000);
+      // Show success message
+      alert('Application submitted successfully!');
+      
+      // Optionally redirect to dashboard after a delay
+      setTimeout(() => {
+        navigate('/user/dashboard');
+      }, 2000);
+    }, 1500);
   };
 
   if (!jobDetails) {
@@ -126,9 +207,12 @@ const JobDetails = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground">Job not found</p>
-          {/* <button onClick={() => navigate("/user/dashboard")} className="btn-primary mt-4">
+          <button
+            onClick={() => navigate("/user/dashboard")}
+            className="btn-primary mt-4"
+          >
             Back to Dashboard
-          </button> */}
+          </button>
         </div>
       </div>
     );
@@ -136,6 +220,7 @@ const JobDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <header className="sticky top-0 z-50 glass-card border-b border-border/50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -147,15 +232,19 @@ const JobDetails = () => {
                 AI<span className="text-gradient">Match</span>
               </span>
             </Link>
-            {/* <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              onClick={() => navigate("/user/dashboard")}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               <ArrowLeft className="w-4 h-4" />
               Back to Dashboard
-            </button> */}
+            </button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl pb-32">
+        {/* Job Header */}
         <div className="glass-card rounded-xl p-8 mb-6 animate-slide-up">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-4">
@@ -189,27 +278,133 @@ const JobDetails = () => {
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="w-4 h-4" />
-              <span className="text-sm">Posted {new Date(jobDetails.postedDate).toLocaleDateString()}</span>
+              <span className="text-sm">
+                Posted {new Date(jobDetails.postedDate).toLocaleDateString()}
+              </span>
             </div>
           </div>
 
-          <button onClick={handleApply} disabled={hasApplied || isApplying} className={`btn-primary w-full md:w-auto ${hasApplied ? "opacity-50 cursor-not-allowed" : ""}`}>
-            {isApplying ? "Submitting..." : hasApplied ? (
+          {/* Resume Upload Section */}
+          {!hasApplied && (
+            <div className="mb-6 p-6 bg-primary/5 border border-primary/20 rounded-xl">
+              <div className="flex items-start gap-3 mb-4">
+                <Upload className="w-5 h-5 text-primary mt-1" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground mb-1">
+                    Upload Your Resume
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Please upload your resume to apply for this position. Accepted formats: PDF, DOC, DOCX (Max 5MB)
+                  </p>
+                </div>
+              </div>
+
+              {!selectedFile ? (
+                <div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileSelect}
+                    accept=".pdf,.doc,.docx"
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="btn-secondary w-full flex items-center justify-center gap-2"
+                  >
+                    <FileText className="w-5 h-5" />
+                    Choose Resume File
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between p-4 bg-background rounded-lg mb-3">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {(selectedFile.size / 1024).toFixed(2)} KB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={removeFile}
+                      className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Progress Bar */}
+                  {isUploading && (
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between text-sm mb-2">
+                        <span className="text-muted-foreground">Uploading...</span>
+                        <span className="font-medium text-primary">{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-300 ease-out"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {uploadProgress === 100 && !isUploading && (
+                    <div className="flex items-center gap-2 text-success text-sm">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Resume uploaded successfully!</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Apply Button */}
+          <button
+            onClick={handleApply}
+            disabled={hasApplied || isApplying || isUploading || !selectedFile}
+            className={`btn-primary w-full ${
+              (hasApplied || !selectedFile || isUploading) ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isApplying ? (
+              "Submitting Application..."
+            ) : hasApplied ? (
               <>
-                <CheckCircle2 className="w-5 h-5 inline mr-2" />
+                <CheckCircle2 className="w-5 h-5" />
                 Already Applied
               </>
-            ) : "Apply for this position"}
+            ) : !selectedFile ? (
+              "Upload Resume to Apply"
+            ) : isUploading ? (
+              "Uploading Resume..."
+            ) : (
+              "Submit Application"
+            )}
           </button>
         </div>
 
+        {/* Job Description */}
         <div className="glass-card rounded-xl p-8 mb-6 animate-slide-up delay-100">
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">About the Role</h2>
-          <p className="text-muted-foreground leading-relaxed">{jobDetails.description}</p>
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">
+            About the Role
+          </h2>
+          <p className="text-muted-foreground leading-relaxed">
+            {jobDetails.description}
+          </p>
         </div>
 
+        {/* Responsibilities */}
         <div className="glass-card rounded-xl p-8 mb-6 animate-slide-up delay-200">
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">Responsibilities</h2>
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">
+            Responsibilities
+          </h2>
           <ul className="space-y-3">
             {jobDetails.responsibilities.map((responsibility, index) => (
               <li key={index} className="flex items-start gap-3">
@@ -220,8 +415,11 @@ const JobDetails = () => {
           </ul>
         </div>
 
+        {/* Requirements */}
         <div className="glass-card rounded-xl p-8 mb-6 animate-slide-up delay-300">
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">Requirements</h2>
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">
+            Requirements
+          </h2>
           <ul className="space-y-3">
             {jobDetails.requirements.map((requirement, index) => (
               <li key={index} className="flex items-start gap-3">
@@ -232,19 +430,28 @@ const JobDetails = () => {
           </ul>
         </div>
 
+        {/* Skills */}
         <div className="glass-card rounded-xl p-8 mb-6 animate-slide-up delay-400">
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">Required Skills</h2>
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">
+            Required Skills
+          </h2>
           <div className="flex flex-wrap gap-2">
             {jobDetails.skills.map((skill, index) => (
-              <span key={index} className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-medium">
+              <span
+                key={index}
+                className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-medium"
+              >
                 {skill}
               </span>
             ))}
           </div>
         </div>
 
+        {/* Benefits */}
         <div className="glass-card rounded-xl p-8 mb-6 animate-slide-up delay-500">
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">Benefits</h2>
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">
+            Benefits
+          </h2>
           <ul className="space-y-3">
             {jobDetails.benefits.map((benefit, index) => (
               <li key={index} className="flex items-start gap-3">
@@ -255,22 +462,31 @@ const JobDetails = () => {
           </ul>
         </div>
 
-        <div className="glass-card rounded-xl p-8 mb-20 md:mb-6 animate-slide-up delay-600">
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">About {jobDetails.companyName}</h2>
-          <p className="text-muted-foreground leading-relaxed">{jobDetails.companyDescription}</p>
-        </div>
-
-        <div className="fixed bottom-0 left-0 right-0 p-4 glass-card border-t border-border/50 md:hidden">
-          <button onClick={handleApply} disabled={hasApplied || isApplying} className={`btn-primary w-full ${hasApplied ? "opacity-50 cursor-not-allowed" : ""}`}>
-            {isApplying ? "Submitting..." : hasApplied ? (
-              <>
-                <CheckCircle2 className="w-5 h-5 inline mr-2" />
-                Already Applied
-              </>
-            ) : "Apply for this position"}
-          </button>
+        {/* Company Info */}
+        <div className="glass-card rounded-xl p-8 animate-slide-up delay-600">
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">
+            About {jobDetails.companyName}
+          </h2>
+          <p className="text-muted-foreground leading-relaxed">
+            {jobDetails.companyDescription}
+          </p>
         </div>
       </main>
+
+      {/* Sticky Bottom Apply Bar (Mobile) */}
+      {!hasApplied && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 glass-card border-t border-border/50 md:hidden z-40">
+          <button
+            onClick={handleApply}
+            disabled={isApplying || isUploading || !selectedFile}
+            className={`btn-primary w-full ${
+              (!selectedFile || isUploading) ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isApplying ? "Submitting..." : !selectedFile ? "Upload Resume First" : "Submit Application"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
