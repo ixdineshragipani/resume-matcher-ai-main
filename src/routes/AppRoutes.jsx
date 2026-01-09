@@ -15,7 +15,7 @@ import NotFound from '../pages/NotFound';
 import Profile from '../pages/Profile';
 import JobDetails from '../pages/JobDetails';
 import JobApplicants from '../pages/JobApplicants';
-
+import CompanyProfile from '../pages/CompanyProfile';
 
 const AppRoutes = () => {
   return (
@@ -26,6 +26,7 @@ const AppRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/Profile" element={<Profile />} />
       <Route path="/job/:jobId" element={<JobDetails/>}/>
+      <Route path="/CompanyProfile" element={<CompanyProfile/>}/>
 {/* 
       <Route path="/companydashboard" element={<CompanyDashboard />} />
       <Route path="/company-dashboard/job/:jobId" element={<JobApplicants />} /> */}
@@ -47,6 +48,17 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* <Route
+        path="/company/CompanyProfile"
+        element={
+          <ProtectedRoute userType="company">
+            <CompanyProfile />
+          </ProtectedRoute>
+        }
+      /> */}
+
+      
 
       <Route
         path="/company/dashboard/job/:jobId"

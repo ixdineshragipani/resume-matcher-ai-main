@@ -89,6 +89,7 @@ const UserDashboard = () => {
   const handleProfile = () => {
     navigate("/Profile");
   };
+  
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -176,6 +177,9 @@ const UserDashboard = () => {
               <span className="text-sm text-muted-foreground hidden md:block">
                 Job Seeker Dashboard
               </span>
+              <button className="flex items-center font-bold glass-card md:inline"
+              onClick={handleProfile}
+                >Profile </button>  
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-destructive bg-destructive/10 rounded-lg hover:bg-destructive/20 transition-colors"
@@ -184,9 +188,7 @@ const UserDashboard = () => {
                 <span className="hidden md:inline">Logout</span>
                 
               </button>
-              <button
-              onClick={handleProfile}
-                >Profile </button>
+              
             </div>
           </div>
         </div>

@@ -18,6 +18,9 @@ const CompanyDashboard = () => {
     setJobs(savedJobs);
   }, []);
 
+  const handleProfile=()=>{
+    navigate('/CompanyProfile');
+  };
   const handleLogout = () => {
     localStorage.removeItem('companyAuth');
     localStorage.removeItem('companyData');
@@ -76,6 +79,8 @@ const CompanyDashboard = () => {
               <span className="text-sm text-muted-foreground hidden md:block">
                 Company Dashboard
               </span>
+              <button onClick={handleProfile} 
+              className='flex items-center gap-2 px-4 py-2 text-sm font-medium text-destructive bg-destructive/10 rounded-lg hover:bg-destructive/20 transition-colors'> Profile</button>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-destructive bg-destructive/10 rounded-lg hover:bg-destructive/20 transition-colors"
