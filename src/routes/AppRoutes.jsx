@@ -13,6 +13,7 @@ import About from '../pages/About';
 import Contact from '../pages/Contact';
 import NotFound from '../pages/NotFound';
 import Profile from '../pages/Profile';
+import JobDetails from '../pages/JobDetails';
 const AppRoutes = () => {
   return (
     <Routes>
@@ -21,6 +22,7 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/Profile" element={<Profile />} />
+      <Route path="/job/:jobId" element={<JobDetails/>}/>
       
       {/* Company Auth Routes */}
       <Route path="/company/login" element={<CompanyLogin />} />

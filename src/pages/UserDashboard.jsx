@@ -339,9 +339,12 @@ const UserDashboard = () => {
                   </div>
 
                   {/* View Details */}
-                  <button className="p-2 rounded-lg hover:bg-muted transition-colors">
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                  </button>
+                  <button 
+  onClick={() => navigate(`/job/${application.id}`)}
+  className="p-2 rounded-lg hover:bg-muted transition-colors"
+>
+  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+</button>
                 </div>
               </div>
             </div>
