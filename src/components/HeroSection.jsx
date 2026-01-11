@@ -30,7 +30,7 @@ const HeroSection = () => {
               AI-Powered Recruitment Platform
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-foreground leading-tight mb-6">
               Find Your Perfect{' '}
               <span className="text-gradient">Candidate Match</span>{' '}
               Instantly

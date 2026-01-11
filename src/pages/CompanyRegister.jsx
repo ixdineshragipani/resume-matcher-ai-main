@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Mail, Lock, ArrowRight, Building2, User, Phone } from 'lucide-react';
-
+import CompanyLogin from './CompanyLogin';
 const CompanyRegister = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const CompanyRegister = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -40,6 +40,7 @@ const CompanyRegister = () => {
       {/* Left Side - Visual */}
       <div className="hidden lg:flex w-1/2 gradient-primary items-center justify-center p-12">
         <div className="max-w-lg text-primary-foreground animate-fade-in">
+
           <div className="w-20 h-20 rounded-2xl bg-primary-foreground/20 flex items-center justify-center mb-8">
             <Building2 className="w-10 h-10" />
           </div>
@@ -73,6 +74,7 @@ const CompanyRegister = () => {
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
+            
             <span className="text-xl font-display font-bold text-foreground">
               AI<span className="text-gradient">Match</span>
             </span>

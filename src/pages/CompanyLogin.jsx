@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Mail, Lock, ArrowRight, Building2 } from 'lucide-react';
-
+import LandingPage from '../pages/LandingPage.jsx';
 const CompanyLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,6 +14,9 @@ const CompanyLogin = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleBack = () => {
+    navigate("/");
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -33,8 +36,10 @@ const CompanyLogin = () => {
     <div className="min-h-screen flex">
       {/* Left Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+      
         <div className="w-full max-w-md animate-slide-up">
           {/* Logo */}
+          <button className="btn-secondary mb-8" onClick={handleBack}>Back</button>
           <Link to="/" className="flex items-center gap-2 mb-8">
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />

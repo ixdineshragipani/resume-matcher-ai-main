@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Mail, Lock, ArrowRight, User, Briefcase } from 'lucide-react';
-
+import LandingPage from '../pages/LandingPage.jsx';
 const UserLogin = () => {
   const navigate = useNavigate();
   const [isFlipped, setIsFlipped] = useState(false);
@@ -39,7 +39,9 @@ const UserLogin = () => {
     setIsLoading(false);
     navigate('/user/dashboard');
   };
-
+  const handleBack = () => {
+    navigate("/");
+  };
   const handleRegister = async (e) => {
     e.preventDefault();
     
@@ -100,6 +102,7 @@ const UserLogin = () => {
               }}
             >
               {/* Logo */}
+              <button className="btn-secondary mb-8" onClick={handleBack}>Back</button>
               <Link to="/" className="flex items-center gap-2 mb-8">
                 <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-primary-foreground" />
@@ -204,6 +207,7 @@ const UserLogin = () => {
               }}
             >
               {/* Logo */}
+              
               <Link to="/" className="flex items-center gap-2 mb-8">
                 <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-primary-foreground" />

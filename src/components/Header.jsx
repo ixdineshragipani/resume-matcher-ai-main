@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Briefcase, Users, Info, Mail, Sparkles } from "lucide-react";
+import { Menu, X, Briefcase, Users, Info, Mail, Sparkles, Building } from "lucide-react";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -8,7 +8,7 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home", icon: Briefcase },
-    { to: "/company/login", label: "Company", icon: Briefcase },
+    { to: "/company/login", label: "Company", icon: Building },
     { to: "/user/login", label: "Users", icon: Users },
     { to: "/about", label: "About", icon: Info },
     { to: "/contact", label: "Contact", icon: Mail },
@@ -36,7 +36,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-4">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -52,7 +52,7 @@ const Header = () => {
           </nav>
 
           {/* CTA Button - Desktop */}
-          <div className="hidden md:block">
+          <div className="md:block">
             <Link to="/company/login" className="btn-primary">
               Get Started
             </Link>
@@ -61,7 +61,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+            className="md:hidden inline-flex items-center p-2 rounded-lg hover:bg-muted transition-colors"
           >
             {isMobileMenuOpen ? (
               <X className="w-6 h-6 text-foreground" />
@@ -73,8 +73,8 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-border/50 animate-fade-in">
-            <div className="flex flex-col gap-2">
+          <nav className="md:hidden flex flex-col space-y-2 p-4 bg-white shadow-md border-t border-border/50 animate-fade-in">
+            <div className="flex flex-col gap-2 space-y-2 p-4 bg-white shadow-md">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
