@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, ArrowRight, Building2 } from 'lucide-react';
-import LandingPage from '../pages/LandingPage.jsx';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Sparkles, Mail, Lock, ArrowRight, Building2 } from "lucide-react";
+import LandingPage from "../pages/LandingPage.jsx";
 const CompanyLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,26 +20,30 @@ const CompanyLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Simulate login
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Set auth state
-    localStorage.setItem('companyAuth', 'true');
-    localStorage.setItem('companyData', JSON.stringify({ email: formData.email }));
-    
+    localStorage.setItem("companyAuth", "true");
+    localStorage.setItem(
+      "companyData",
+      JSON.stringify({ email: formData.email })
+    );
+
     setIsLoading(false);
-    navigate('/company/dashboard');
+    navigate("/company/dashboard");
   };
 
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
-      
         <div className="w-full max-w-md animate-slide-up">
           {/* Logo */}
-          <button className="btn-secondary mb-8" onClick={handleBack}>Back</button>
+          <button className="btn-secondary mb-8" onClick={handleBack}>
+            &larr; Back
+          </button>
           <Link to="/" className="flex items-center gap-2 mb-8">
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />
@@ -103,7 +107,9 @@ const CompanyLogin = () => {
                   type="checkbox"
                   className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
                 />
-                <span className="text-sm text-muted-foreground">Remember me</span>
+                <span className="text-sm text-muted-foreground">
+                  Remember me
+                </span>
               </label>
               <Link to="#" className="text-sm text-primary hover:underline">
                 Forgot password?
@@ -128,8 +134,11 @@ const CompanyLogin = () => {
 
           {/* Register Link */}
           <p className="mt-8 text-center text-muted-foreground">
-            Don't have an account?{' '}
-            <Link to="/company/register" className="text-primary font-medium hover:underline">
+            Don't have an account?{" "}
+            <Link
+              to="/company/register"
+              className="text-primary font-medium hover:underline"
+            >
               Register your company
             </Link>
           </p>
@@ -146,10 +155,15 @@ const CompanyLogin = () => {
             Hire Smarter with AI
           </h2>
           <p className="text-lg text-primary-foreground/80 mb-8">
-            Access our powerful AI-driven recruitment tools to find the perfect candidates for your team.
+            Access our powerful AI-driven recruitment tools to find the perfect
+            candidates for your team.
           </p>
           <div className="space-y-4">
-            {['AI-powered resume screening', 'Instant ATS score generation', 'Smart candidate shortlisting'].map((feature) => (
+            {[
+              "AI-powered resume screening",
+              "Instant ATS score generation",
+              "Smart candidate shortlisting",
+            ].map((feature) => (
               <div key={feature} className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary-foreground/20 flex items-center justify-center">
                   <ArrowRight className="w-3 h-3" />
