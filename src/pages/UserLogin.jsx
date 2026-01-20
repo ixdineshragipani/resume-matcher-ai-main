@@ -135,7 +135,7 @@ const UserLogin = () => {
                   Welcome Back
                 </h1>
                 <p className="text-muted-foreground">
-                  Sign in to your job seeker account
+                  Sign in to your job seeker account and enjoy....
                 </p>
               </div>
 
